@@ -38,7 +38,11 @@ declare global {
 
 		interface IntrinsicClassAttributes<T extends Instance> extends Roact.PropsWithChildren {}
 
-		type LibraryManagedAttributes<C, P> = C extends { defaultProps: infer D } ? Defaultize<P, D> : P;
+		type LibraryManagedAttributes<C, P> = C extends {
+			defaultProps: infer D;
+		}
+			? Defaultize<P, D>
+			: P;
 
 		type IntrinsicElement<T extends Instance> = Roact.JsxInstance<T> & IntrinsicAttributes;
 

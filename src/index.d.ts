@@ -37,7 +37,9 @@ declare namespace Roact {
 
 // Props
 declare namespace Roact {
-	export type PropsWithChildren<P = {}> = P & { [Roact.Children]?: Roact.Children };
+	export type PropsWithChildren<P = {}> = P & {
+		[Roact.Children]?: Roact.Children;
+	};
 }
 
 // Component
@@ -108,7 +110,9 @@ declare namespace Roact {
 	 */
 	export function joinBindings<T extends { [index: string]: Roact.Binding<U> }, U>(
 		bindings: T,
-	): Roact.Binding<{ [K in keyof T]: T[K] extends Roact.Binding<infer V> ? V : never }>;
+	): Roact.Binding<{
+		[K in keyof T]: T[K] extends Roact.Binding<infer V> ? V : never;
+	}>;
 	export function joinBindings<T>(bindings: ReadonlyArray<Roact.Binding<T>>): Roact.Binding<Array<T>>;
 	export function joinBindings<T>(
 		bindings: ReadonlyMap<string | number, Roact.Binding<T>>,
@@ -228,7 +232,9 @@ declare namespace Roact {
 			: never;
 	};
 
-	export type JsxInstanceChangeEvents<T extends Instance> = { [key in InstancePropertyNames<T>]?: (rbx: T) => void };
+	export type JsxInstanceChangeEvents<T extends Instance> = {
+		[key in InstancePropertyNames<T>]?: (rbx: T) => void;
+	};
 
 	export type JsxInstance<T extends Instance> = Roact.PropsWithChildren &
 		JsxInstanceProperties<T> & {

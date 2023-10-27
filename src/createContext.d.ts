@@ -24,9 +24,7 @@ import Roact from "./index";
  * * `render(value) -> RoactElement | nil`: A function that will be invoked to render any children.
  * 	* `render` will be called every time `Consumer` is rendered.
  */
-declare function createContext<T>(
-	defaultValue: T,
-): {
+declare function createContext<T>(defaultValue: T): {
 	Provider: Roact.ComponentConstructor<{
 		value: T;
 	}>;
