@@ -95,7 +95,7 @@ declare abstract class Component<P = {}, S = {}> {
 	// see: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/95475aa1500fc36a142b999898c3093617f37776/types/react/index.d.ts#L479-L485
 	protected setState<K extends keyof S>(
 		stateChange:
-			| ((prevState: Readonly<S>, props: Readonly<P>) => Pick<MapToNone<S>, K> | MapToNone<S>)
+			| ((prevState: Readonly<S>, props: Readonly<P>) => Pick<MapToNone<S>, K> | MapToNone<S> | undefined)
 			| Pick<MapToNone<S>, K>
 			| MapToNone<S>,
 	): void;
