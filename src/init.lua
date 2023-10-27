@@ -22,6 +22,7 @@ local Roact = strict({
 	None = require(script.None),
 	Portal = require(script.Portal),
 	createRef = require(script.createRef),
+	createSignal = require(script.createSignal),
 	forwardRef = require(script.forwardRef),
 	createBinding = Binding.create,
 	joinBindings = Binding.join,
