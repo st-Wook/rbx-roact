@@ -22,11 +22,11 @@ local Roact = strict({
 	None = require(script.None),
 	Portal = require(script.Portal),
 	createRef = require(script.createRef),
-	createSignal = require(script.createSignal),
 	forwardRef = require(script.forwardRef),
 	createBinding = Binding.create,
 	joinBindings = Binding.join,
 	createContext = require(script.createContext),
+	createSignal = require(script.createSignal),
 
 	Change = require(script.PropMarkers.Change),
 	Children = require(script.PropMarkers.Children),

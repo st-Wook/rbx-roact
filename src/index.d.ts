@@ -6,6 +6,7 @@ import createContext from "./createContext";
 import createElement from "./createElement";
 import createFragment from "./createFragment";
 import createRef from "./createRef";
+import createSignal from "./createSignal";
 import forwardRef from "./forwardRef";
 import None from "./None";
 import oneChild from "./oneChild";
@@ -20,18 +21,19 @@ declare namespace Roact {
 
 	export {
 		Component,
-		createContext,
 		createElement,
 		createFragment,
+		oneChild,
+		PureComponent,
+		None,
 		createRef,
 		forwardRef,
-		None,
-		oneChild,
+		createContext,
+		createSignal,
 		Change,
 		Children,
 		Event,
 		Ref,
-		PureComponent,
 	};
 }
 
