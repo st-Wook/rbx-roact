@@ -21,9 +21,9 @@ declare function createElement<P>(
 	component: Roact.FunctionComponent<P>,
 	props?: MapBindings<P>,
 	children?:
-		| { [childName: string]: Roact.Element }
-		| ReadonlyMap<string | number, Roact.Element>
-		| ReadonlyArray<Roact.Element>,
+		| { [childName: string]: Roact.Element | undefined }
+		| ReadonlyMap<string | number, Roact.Element | undefined>
+		| ReadonlyArray<Roact.Element | undefined>,
 ): Roact.Element;
 
 // Class Component
@@ -31,12 +31,12 @@ declare function createElement<P>(
 	component: Roact.ComponentConstructor<P>,
 	props?: MapBindings<P>,
 	children?:
-		| { [childName: string]: Roact.Element }
-		| ReadonlyMap<string | number, Roact.Element>
-		| ReadonlyArray<Roact.Element>,
+		| { [childName: string]: Roact.Element | undefined }
+		| ReadonlyMap<string | number, Roact.Element | undefined>
+		| ReadonlyArray<Roact.Element | undefined>,
 ): Roact.Element;
 
-type HostComponentProps<T extends Roact.HostComponent> = Partial<WritableInstanceProperties<CreatableInstances[T]>> & {
+type HostComponentProps<T extends Roact.HostComponent> = Roact.JsxInstanceProperties<CreatableInstances[T]> & {
 	[Roact.Ref]?: Roact.Ref<CreatableInstances[T]> | ((ref: CreatableInstances[T]) => void);
 };
 
@@ -45,9 +45,9 @@ declare function createElement<C extends Roact.HostComponent>(
 	component: C,
 	props?: MapBindings<HostComponentProps<C>>,
 	children?:
-		| { [childName: string]: Roact.Element }
-		| ReadonlyMap<string | number, Roact.Element>
-		| ReadonlyArray<Roact.Element>,
+		| { [childName: string]: Roact.Element | undefined }
+		| ReadonlyMap<string | number, Roact.Element | undefined>
+		| ReadonlyArray<Roact.Element | undefined>,
 ): Roact.Element;
 
 export = createElement;
