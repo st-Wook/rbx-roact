@@ -136,7 +136,6 @@ local function applyProp(virtualNode, key, newValue, oldValue)
 
 	if oldIsBinding then
 		removeBinding(virtualNode, key)
-		Binding.destroy(oldValue)
 	end
 
 	if newIsBinding then
