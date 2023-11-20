@@ -1,6 +1,6 @@
 local Symbol = require(script.Parent.Symbol)
 local createFragment = require(script.Parent.createFragment)
-local createSignal = require(script.Parent.createSignal)
+local Signal = require(script.Parent.Signal)
 local Children = require(script.Parent.PropMarkers.Children)
 local Component = require(script.Parent.Component)
 
@@ -10,7 +10,7 @@ local Component = require(script.Parent.Component)
 local function createContextEntry(currentValue)
 	return {
 		value = currentValue,
-		onUpdate = createSignal(),
+		onUpdate = Signal.new(),
 	}
 end
 
@@ -44,7 +44,7 @@ local function createProvider(context)
 		-- This codepath will generally only update consumer components that has
 		-- a component implementing shouldUpdate between them and the provider.
 		if prevProps.value ~= self.props.value then
-			self.contextEntry.onUpdate:fire(self.props.value)
+			self.contextEntry.onUpdate:Fire(self.props.value)
 		end
 	end
 
@@ -107,7 +107,7 @@ local function createConsumer(context)
 			-- only update if they differ. This may happen when an update from a
 			-- provider was blocked by an intermediate component that returned
 			-- false from shouldUpdate.
-			self.disconnect = self.contextEntry.onUpdate:subscribe(function(newValue)
+			self.disconnect = self.contextEntry.onUpdate:Connect(function(newValue)
 				if newValue ~= self.lastValue then
 					-- Trigger a dummy state update.
 					self:setState({})

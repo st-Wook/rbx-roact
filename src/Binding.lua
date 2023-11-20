@@ -1,4 +1,4 @@
-local createSignal = require(script.Parent.createSignal)
+local Signal = require(script.Parent.Signal)
 local Symbol = require(script.Parent.Symbol)
 local Type = require(script.Parent.Type)
 
@@ -29,8 +29,8 @@ function BindingInternalApi.update(binding, newValue)
 	return binding[BindingImpl].update(newValue)
 end
 
-function BindingInternalApi.subscribe(binding, callback)
-	return binding[BindingImpl].subscribe(callback)
+function BindingInternalApi.connect(binding, callback)
+	return binding[BindingImpl].connect(callback)
 end
 
 function BindingInternalApi.getValue(binding)
@@ -40,16 +40,16 @@ end
 function BindingInternalApi.create(initialValue)
 	local impl = {
 		value = initialValue,
-		changeSignal = createSignal(),
+		changeSignal = Signal.new(),
 	}
 
-	function impl.subscribe(callback)
-		return impl.changeSignal:subscribe(callback)
+	function impl.connect(callback)
+		return impl.changeSignal:Connect(callback)
 	end
 
 	function impl.update(newValue)
 		impl.value = newValue
-		impl.changeSignal:fire(newValue)
+		impl.changeSignal:Fire(newValue)
 	end
 
 	function impl.getValue()
@@ -70,8 +70,8 @@ function BindingInternalApi.map(upstreamBinding, predicate)
 
 	local impl = {}
 
-	function impl.subscribe(callback)
-		return BindingInternalApi.subscribe(upstreamBinding, function(newValue)
+	function impl.connect(callback)
+		return BindingInternalApi.connect(upstreamBinding, function(newValue)
 			callback(predicate(newValue))
 		end)
 	end
@@ -116,11 +116,11 @@ function BindingInternalApi.join(upstreamBindings)
 		return value
 	end
 
-	function impl.subscribe(callback)
+	function impl.connect(callback)
 		local disconnects = {}
 
 		for key, upstream in pairs(upstreamBindings) do
-			disconnects[key] = BindingInternalApi.subscribe(upstream, function(_newValue)
+			disconnects[key] = BindingInternalApi.connect(upstream, function(_newValue)
 				callback(getValue())
 			end)
 		end

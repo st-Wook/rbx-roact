@@ -89,7 +89,7 @@ local function attachBinding(virtualNode, key, newBinding)
 		virtualNode.bindings = {}
 	end
 
-	virtualNode.bindings[key] = Binding.subscribe(newBinding, updateBoundProperty)
+	virtualNode.bindings[key] = Binding.connect(newBinding, updateBoundProperty)
 
 	updateBoundProperty(newBinding:getValue())
 end
