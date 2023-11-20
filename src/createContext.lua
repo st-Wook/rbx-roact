@@ -52,6 +52,13 @@ local function createProvider(context)
 		return createFragment(self.props[Children])
 	end
 
+	function Provider:willUnmount()
+		if self.contextEntry.onUpdate ~= nil then
+			self.contextEntry.onUpdate:Destroy()
+			self.contextEntry.onUpdate = nil
+		end
+	end
+
 	return Provider
 end
 

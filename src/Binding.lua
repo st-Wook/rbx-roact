@@ -33,6 +33,10 @@ function BindingInternalApi.connect(binding, callback)
 	return binding[BindingImpl].connect(callback)
 end
 
+function BindingInternalApi.destroy(binding)
+	return binding[BindingImpl].destroy()
+end
+
 function BindingInternalApi.getValue(binding)
 	return binding[BindingImpl].getValue()
 end
@@ -44,6 +48,10 @@ function BindingInternalApi.create(initialValue)
 	}
 
 	function impl.connect(callback)
+		if impl.changeSignal == nil then
+			error("Cannot connect to a destroyed binding", 2)
+		end
+
 		local connection = impl.changeSignal:Connect(callback)
 		return function()
 			connection:Disconnect()
@@ -51,9 +59,20 @@ function BindingInternalApi.create(initialValue)
 		end
 	end
 
+	function impl.destroy()
+		if impl.changeSignal == nil then
+			error("Cannot destroy a destroyed binding", 2)
+		end
+
+		impl.changeSignal:Destroy()
+		impl.changeSignal = nil
+	end
+
 	function impl.update(newValue)
 		impl.value = newValue
-		impl.changeSignal:Fire(newValue)
+		if impl.changeSignal ~= nil then
+			impl.changeSignal:Fire(newValue)
+		end
 	end
 
 	function impl.getValue()
@@ -78,6 +97,10 @@ function BindingInternalApi.map(upstreamBinding, predicate)
 		return BindingInternalApi.connect(upstreamBinding, function(newValue)
 			callback(predicate(newValue))
 		end)
+	end
+
+	function impl.destroy()
+		error("Bindings created by Binding:map(fn) cannot be destroyed directly", 2)
 	end
 
 	function impl.update(_newValue)
@@ -139,6 +162,12 @@ function BindingInternalApi.join(upstreamBindings)
 			end
 
 			disconnects = nil :: any
+		end
+	end
+
+	function impl.destroy()
+		for _, upstream in pairs(upstreamBindings) do
+			BindingInternalApi.destroy(upstream)
 		end
 	end
 
