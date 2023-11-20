@@ -100,7 +100,7 @@ function BindingInternalApi.map(upstreamBinding, predicate)
 	end
 
 	function impl.destroy()
-		error("Bindings created by Binding:map(fn) cannot be destroyed directly", 2)
+		BindingInternalApi.destroy(upstreamBinding)
 	end
 
 	function impl.update(_newValue)
