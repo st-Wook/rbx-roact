@@ -7,10 +7,10 @@
 local Binding = require(script.Parent.Binding)
 local Children = require(script.Parent.PropMarkers.Children)
 local ElementKind = require(script.Parent.ElementKind)
-local SingleEventManager = require(script.Parent.SingleEventManager)
-local getDefaultInstanceProperty = require(script.Parent.getDefaultInstanceProperty)
 local Ref = require(script.Parent.PropMarkers.Ref)
+local SingleEventManager = require(script.Parent.SingleEventManager)
 local Type = require(script.Parent.Type)
+local getDefaultInstanceProperty = require(script.Parent.getDefaultInstanceProperty)
 local internalAssert = require(script.Parent.internalAssert)
 
 local config = require(script.Parent.GlobalConfig).get()

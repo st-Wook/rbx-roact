@@ -1,9 +1,9 @@
 --!nonstrict
-local Type = require(script.Parent.Type)
+local Children = require(script.Parent.PropMarkers.Children)
 local ElementKind = require(script.Parent.ElementKind)
 local ElementUtils = require(script.Parent.ElementUtils)
-local Children = require(script.Parent.PropMarkers.Children)
 local Symbol = require(script.Parent.Symbol)
+local Type = require(script.Parent.Type)
 local internalAssert = require(script.Parent.internalAssert)
 
 local config = require(script.Parent.GlobalConfig).get()

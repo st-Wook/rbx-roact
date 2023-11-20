@@ -1,9 +1,9 @@
-local assign = require(script.Parent.assign)
 local ComponentLifecyclePhase = require(script.Parent.ComponentLifecyclePhase)
-local Type = require(script.Parent.Type)
 local Symbol = require(script.Parent.Symbol)
-local invalidSetStateMessages = require(script.Parent.invalidSetStateMessages)
+local Type = require(script.Parent.Type)
+local assign = require(script.Parent.assign)
 local internalAssert = require(script.Parent.internalAssert)
+local invalidSetStateMessages = require(script.Parent.invalidSetStateMessages)
 
 local config = require(script.Parent.GlobalConfig).get()
 

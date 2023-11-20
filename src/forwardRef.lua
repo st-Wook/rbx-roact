@@ -1,6 +1,6 @@
-local assign = require(script.Parent.assign)
 local None = require(script.Parent.None)
 local Ref = require(script.Parent.PropMarkers.Ref)
+local assign = require(script.Parent.assign)
 
 local config = require(script.Parent.GlobalConfig).get()
 

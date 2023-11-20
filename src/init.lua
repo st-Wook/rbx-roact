@@ -3,12 +3,12 @@
 	Packages up the internals of Roact and exposes a public API for it.
 ]]
 
+local Binding = require(script.Binding)
 local GlobalConfig = require(script.GlobalConfig)
+local RobloxRenderer = require(script.RobloxRenderer)
 local createReconciler = require(script.createReconciler)
 local createReconcilerCompat = require(script.createReconcilerCompat)
-local RobloxRenderer = require(script.RobloxRenderer)
 local strict = require(script.strict)
-local Binding = require(script.Binding)
 
 local robloxReconciler = createReconciler(RobloxRenderer)
 local reconcilerCompat = createReconcilerCompat(robloxReconciler)
