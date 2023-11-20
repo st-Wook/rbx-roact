@@ -118,7 +118,7 @@ local function createConsumer(context)
 
 	function Consumer:willUnmount()
 		if self.disconnect ~= nil then
-			self.disconnect()
+			self.disconnect:Disconnect()
 			self.disconnect = nil
 		end
 	end
