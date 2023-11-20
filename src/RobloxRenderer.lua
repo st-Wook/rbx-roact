@@ -235,6 +235,11 @@ function RobloxRenderer.unmountHostNode(reconciler, virtualNode)
 
 	detachAllBindings(virtualNode)
 
+	if virtualNode.eventManager ~= nil then
+		virtualNode.eventManager:disconnectAll()
+		virtualNode.eventManager = nil
+	end
+
 	virtualNode.hostObject:Destroy()
 end
 
