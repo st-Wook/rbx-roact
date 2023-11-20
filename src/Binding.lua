@@ -44,7 +44,11 @@ function BindingInternalApi.create(initialValue)
 	}
 
 	function impl.connect(callback)
-		return impl.changeSignal:Connect(callback)
+		local connection = impl.changeSignal:Connect(callback)
+		return function()
+			connection:Disconnect()
+			connection = nil
+		end
 	end
 
 	function impl.update(newValue)
