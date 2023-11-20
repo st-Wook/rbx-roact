@@ -62,8 +62,8 @@ local function setRobloxInstanceProperty(hostObject, key, newValue)
 end
 
 local function removeBinding(virtualNode, key)
-	local connection = virtualNode.bindings[key]
-	connection:Disconnect()
+	local disconnect = virtualNode.bindings[key]
+	disconnect()
 	virtualNode.bindings[key] = nil
 end
 
@@ -96,8 +96,8 @@ end
 
 local function detachAllBindings(virtualNode)
 	if virtualNode.bindings ~= nil then
-		for _, connection in pairs(virtualNode.bindings) do
-			connection:Disconnect()
+		for _, disconnect in pairs(virtualNode.bindings) do
+			disconnect()
 		end
 		virtualNode.bindings = nil
 	end
