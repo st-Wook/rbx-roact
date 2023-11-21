@@ -1,6 +1,6 @@
-local Signal = require(script.Parent.Signal)
 local Symbol = require(script.Parent.Symbol)
 local Type = require(script.Parent.Type)
+local createSignal = require(script.Parent.createSignal)
 
 local config = require(script.Parent.GlobalConfig).get()
 
@@ -40,20 +40,16 @@ end
 function BindingInternalApi.create(initialValue)
 	local impl = {
 		value = initialValue,
-		changeSignal = Signal.new(),
+		changeSignal = createSignal(),
 	}
 
 	function impl.connect(callback)
-		local connection = impl.changeSignal:Connect(callback)
-		return function()
-			connection:Disconnect()
-			connection = nil
-		end
+		return impl.changeSignal:connect(callback)
 	end
 
 	function impl.update(newValue)
 		impl.value = newValue
-		impl.changeSignal:Fire(newValue)
+		impl.changeSignal:fire(newValue)
 	end
 
 	function impl.getValue()
