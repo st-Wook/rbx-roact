@@ -9,7 +9,7 @@
 
 local function deepEqual(a: any, b: any): (boolean, string?)
 	if typeof(a) ~= typeof(b) then
-		local message = ("{1} is of type %s, but {2} is of type %s"):format(typeof(a), typeof(b))
+		local message = string.format("{1} is of type %s, but {2} is of type %s", typeof(a), typeof(b))
 		return false, message
 	end
 
@@ -21,9 +21,11 @@ local function deepEqual(a: any, b: any): (boolean, string?)
 
 			local success, innerMessage = deepEqual(value, b[key])
 			if not success and innerMessage then
-				local message = innerMessage
-					:gsub("{1}", ("{1}[%s]"):format(tostring(key)))
-					:gsub("{2}", ("{2}[%s]"):format(tostring(key)))
+				local message = string.gsub(
+					string.gsub(innerMessage, "{1}", string.format("{1}[%s]", tostring(key))),
+					"{2}",
+					string.format("{2}[%s]", tostring(key))
+				)
 
 				return false, message
 			end
@@ -34,9 +36,11 @@ local function deepEqual(a: any, b: any): (boolean, string?)
 				local success, innerMessage = deepEqual(value, a[key])
 
 				if not success and innerMessage then
-					local message = innerMessage
-						:gsub("{1}", ("{1}[%s]"):format(tostring(key)))
-						:gsub("{2}", ("{2}[%s]"):format(tostring(key)))
+					local message = string.gsub(
+						string.gsub(innerMessage, "{1}", string.format("{1}[%s]", tostring(key))),
+						"{2}",
+						string.format("{2}[%s]", tostring(key))
+					)
 
 					return false, message
 				end
@@ -58,9 +62,9 @@ local function assertDeepEqual(a, b)
 	local success, innerMessageTemplate = deepEqual(a, b)
 
 	if not success and innerMessageTemplate then
-		local innerMessage = innerMessageTemplate:gsub("{1}", "first"):gsub("{2}", "second")
+		local innerMessage = string.gsub(string.gsub(innerMessageTemplate, "{1}", "first"), "{2}", "second")
 
-		local message = ("Values were not deep-equal.\n%s"):format(innerMessage)
+		local message = string.format("Values were not deep-equal.\n%s", innerMessage)
 
 		error(message, 2)
 	end

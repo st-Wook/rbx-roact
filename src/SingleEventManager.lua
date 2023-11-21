@@ -53,12 +53,10 @@ function SingleEventManager:connectEvent(key, listener)
 end
 
 function SingleEventManager:connectPropertyChange(key, listener)
-	local success, event = pcall(function()
-		return self._instance:GetPropertyChangedSignal(key)
-	end)
+	local success, event = pcall(self._instance.GetPropertyChangedSignal, self._instance, key)
 
 	if not success then
-		error(("Cannot get changed signal on property %q: %s"):format(tostring(key), event), 0)
+		error(string.format("Cannot get changed signal on property %q: %s", tostring(key), event), 0)
 	end
 
 	self:_connect(CHANGE_PREFIX .. key, event, listener)
@@ -67,8 +65,9 @@ end
 function SingleEventManager:_connect(eventKey, event, listener)
 	-- If the listener doesn't exist we can just disconnect the existing connection
 	if listener == nil then
-		if self._connections[eventKey] ~= nil then
-			self._connections[eventKey]:Disconnect()
+		local connection = self._connections[eventKey]
+		if connection ~= nil then
+			connection:Disconnect()
 			self._connections[eventKey] = nil
 		end
 
@@ -105,12 +104,9 @@ function SingleEventManager:resume()
 
 	self._isResuming = true
 
-	local index = 1
-
 	-- More events might be added to the queue when evaluating events, so we
 	-- need to be careful in order to preserve correct evaluation order.
-	while index <= #self._suspendedEventQueue do
-		local eventInvocation = self._suspendedEventQueue[index]
+	for _, eventInvocation in pairs(self._suspendedEventQueue) do
 		local listener = self._listeners[eventInvocation[1]]
 		local argumentCount = eventInvocation[2]
 
@@ -130,13 +126,11 @@ function SingleEventManager:resume()
 				Logging.warn("%s", result)
 			end
 		end
-
-		index = index + 1
 	end
 
 	self._isResuming = false
 	self._status = EventStatus.Enabled
-	self._suspendedEventQueue = {}
+	table.clear(self._suspendedEventQueue)
 end
 
 function SingleEventManager:disconnectAll()

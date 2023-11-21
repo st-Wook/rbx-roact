@@ -111,7 +111,7 @@ function Component:setState(mapState)
 	then
 		local messageTemplate = invalidSetStateMessages[internalData.lifecyclePhase]
 
-		local message = messageTemplate:format(tostring(internalData.componentClass))
+		local message = string.format(messageTemplate, tostring(internalData.componentClass))
 		error(message, 2)
 	elseif lifecyclePhase == ComponentLifecyclePhase.WillUnmount then
 		-- Should not print error message. See https://github.com/facebook/react/pull/22114
@@ -163,7 +163,7 @@ function Component:setState(mapState)
 	else
 		local messageTemplate = invalidSetStateMessages.default
 
-		local message = messageTemplate:format(tostring(internalData.componentClass))
+		local message = string.format(messageTemplate, tostring(internalData.componentClass))
 
 		error(message, 2)
 	end
@@ -189,7 +189,7 @@ end
 function Component:render()
 	local internalData = self[InternalData]
 
-	local message = componentMissingRenderMessage:format(tostring(internalData.componentClass))
+	local message = string.format(componentMissingRenderMessage, tostring(internalData.componentClass))
 
 	error(message, 0)
 end
@@ -254,7 +254,8 @@ function Component:__validateProps(props)
 
 	if typeof(validator) ~= "function" then
 		error(
-			("validateProps must be a function, but it is a %s.\nCheck the definition of the component %q."):format(
+			string.format(
+				"validateProps must be a function, but it is a %s.\nCheck the definition of the component %q.",
 				typeof(validator),
 				self.__componentName
 			)
@@ -266,7 +267,8 @@ function Component:__validateProps(props)
 	if not success then
 		failureReason = failureReason or "<Validator function did not supply a message>"
 		error(
-			("Property validation failed in %s: %s\n\n%s"):format(
+			string.format(
+				"Property validation failed in %s: %s\n\n%s",
 				self.__componentName,
 				tostring(failureReason),
 				self:getElementTraceback() or "<enable element tracebacks>"
@@ -383,12 +385,12 @@ function Component:__update(updatedElement, updatedState)
 	if config.internalTypeChecks then
 		internalAssert(Type.of(self) == Type.StatefulComponentInstance, "Invalid use of `__update`")
 		internalAssert(
-			Type.of(updatedElement) == Type.Element or updatedElement == nil,
-			"Expected arg #1 to be of type Element or nil"
+			updatedElement == nil or Type.of(updatedElement) == Type.Element,
+			"Expected arg #1 to be of nil or type Element"
 		)
 		internalAssert(
-			typeof(updatedState) == "table" or updatedState == nil,
-			"Expected arg #2 to be of type table or nil"
+			updatedState == nil or typeof(updatedState) == "table",
+			"Expected arg #2 to be of nil or type table"
 		)
 	end
 
@@ -444,7 +446,7 @@ function Component:__update(updatedElement, updatedState)
 		updateCount = updateCount + 1
 
 		if updateCount > MAX_PENDING_UPDATES then
-			error(tooManyUpdatesMessage:format(tostring(internalData.componentClass)), 3)
+			error(string.format(tooManyUpdatesMessage, tostring(internalData.componentClass)), 3)
 		end
 	until internalData.pendingState == nil
 

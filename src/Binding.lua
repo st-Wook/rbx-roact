@@ -100,7 +100,8 @@ function BindingInternalApi.join(upstreamBindings)
 
 		for key, value in pairs(upstreamBindings) do
 			if Type.of(value) ~= Type.Binding then
-				local message = ("Expected arg #1 to contain only bindings, but key %q had a non-binding value"):format(
+				local message = string.format(
+					"Expected arg #1 to contain only bindings, but key %q had a non-binding value",
 					tostring(key)
 				)
 				error(message, 2)

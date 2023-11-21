@@ -44,7 +44,7 @@ local function applyRef(ref, newHostObject)
 		Binding.update(ref, newHostObject)
 	else
 		-- TODO (#197): Better error message
-		error(("Invalid ref: Expected type Binding but got %s"):format(typeof(ref)))
+		error(string.format("Invalid ref: Expected type Binding but got %s", typeof(ref)))
 	end
 end
 
@@ -57,8 +57,6 @@ local function setRobloxInstanceProperty(hostObject, key, newValue)
 
 	-- Assign the new value to the object
 	hostObject[key] = newValue
-
-	return
 end
 
 local function removeBinding(virtualNode, key)
@@ -69,9 +67,7 @@ end
 
 local function attachBinding(virtualNode, key, newBinding)
 	local function updateBoundProperty(newValue)
-		local success, errorMessage = xpcall(function()
-			setRobloxInstanceProperty(virtualNode.hostObject, key, newValue)
-		end, identity)
+		local success, errorMessage = xpcall(setRobloxInstanceProperty, identity, virtualNode.hostObject, key, newValue)
 
 		if not success then
 			local source = virtualNode.currentElement.source
@@ -80,7 +76,7 @@ local function attachBinding(virtualNode, key, newBinding)
 				source = "<enable element tracebacks>"
 			end
 
-			local fullMessage = updatePropsError:format(errorMessage, source)
+			local fullMessage = string.format(updatePropsError, errorMessage, source)
 			error(fullMessage, 0)
 		end
 	end
@@ -191,9 +187,7 @@ function RobloxRenderer.mountHostNode(reconciler, virtualNode)
 	local instance = Instance.new(element.component)
 	virtualNode.hostObject = instance
 
-	local success, errorMessage = xpcall(function()
-		applyProps(virtualNode, element.props)
-	end, identity)
+	local success, errorMessage = xpcall(applyProps, identity, virtualNode, element.props)
 
 	if not success then
 		local source = element.source
@@ -202,7 +196,7 @@ function RobloxRenderer.mountHostNode(reconciler, virtualNode)
 			source = "<enable element tracebacks>"
 		end
 
-		local fullMessage = applyPropsError:format(errorMessage, source)
+		local fullMessage = string.format(applyPropsError, errorMessage, source)
 		error(fullMessage, 0)
 	end
 
@@ -257,9 +251,7 @@ function RobloxRenderer.updateHostNode(reconciler, virtualNode, newElement)
 		applyRef(newProps[Ref], virtualNode.hostObject)
 	end
 
-	local success, errorMessage = xpcall(function()
-		updateProps(virtualNode, oldProps, newProps)
-	end, identity)
+	local success, errorMessage = xpcall(updateProps, identity, virtualNode, oldProps, newProps)
 
 	if not success then
 		local source = newElement.source
@@ -268,7 +260,7 @@ function RobloxRenderer.updateHostNode(reconciler, virtualNode, newElement)
 			source = "<enable element tracebacks>"
 		end
 
-		local fullMessage = updatePropsError:format(errorMessage, source)
+		local fullMessage = string.format(updatePropsError, errorMessage, source)
 		error(fullMessage, 0)
 	end
 

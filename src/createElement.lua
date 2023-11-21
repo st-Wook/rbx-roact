@@ -37,8 +37,8 @@ Instead, consider using a utility function to merge tables of children together:
 local function createElement(component, props, children)
 	if config.typeChecks then
 		assert(component ~= nil, "`component` is required")
-		assert(typeof(props) == "table" or props == nil, "`props` must be a table or nil")
-		assert(typeof(children) == "table" or children == nil, "`children` must be a table or nil")
+		assert(props == nil or typeof(props) == "table", "`props` must be a nil or type table")
+		assert(children == nil or typeof(children) == "table", "`children` must be a nil or type table")
 	end
 
 	if props == nil then
