@@ -117,7 +117,7 @@ function SingleEventManager:resume()
 			-- yielding correctly.
 			local listenerCo = coroutine.create(listener)
 			local success, result =
-				coroutine.resume(listenerCo, self._instance, unpack(eventInvocation, 3, 2 + argumentCount))
+				coroutine.resume(listenerCo, self._instance, table.unpack(eventInvocation, 3, 2 + argumentCount))
 
 			-- If the listener threw an error, we log it as a warning, since
 			-- there's no way to write error text in Roblox Lua without killing
