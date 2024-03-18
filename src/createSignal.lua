@@ -1,68 +1,54 @@
---[[
-	This is a simple signal implementation that has a dead-simple API.
-
-		local signal = createSignal()
-
-		local disconnect = signal:connect(function(foo)
-			print("Cool foo:", foo)
-		end)
-
-		signal:fire("something")
-
-		disconnect()
-]]
+--!strict
 
 local function createSignal()
-	local connections = {}
-	local suspendedConnections = {}
+	local subscriptions = {}
+	local suspendedSubscriptions = {}
 
 	local firing = false
 
-	local function connect(_self, callback)
-		assert(typeof(callback) == "function", "Can only connect to signals with a function.")
-
-		local connection = {
+	local function subscribe(_self, callback)
+		local subscription = {
 			callback = callback,
-			disconnected = false,
+			unsubscribed = false,
 		}
 
 		-- If the callback is already registered, don't add to the
 		-- suspendedConnection. Otherwise, this will disable the existing one.
-		if firing and not connections[callback] then
-			suspendedConnections[callback] = connection
+		if firing and not subscriptions[callback] then
+			suspendedSubscriptions[callback] = subscription
 		else
-			connections[callback] = connection
+			subscriptions[callback] = subscription
 		end
 
-		local function disconnect()
-			connection.disconnected = true
-			connections[callback] = nil
-			suspendedConnections[callback] = nil
+		local function unsubscribe(_self)
+			subscription.unsubscribed = true
+			subscriptions[callback] = nil
+			suspendedSubscriptions[callback] = nil
 		end
 
-		return disconnect
+		return {
+			unsubscribe = unsubscribe,
+		}
 	end
 
-	local function fire(_self, ...)
+	local function fire(value)
 		firing = true
-		for callback, connection in pairs(connections) do
-			if not connection.disconnected and not suspendedConnections[callback] then
-				callback(...)
+		for callback, subscription in subscriptions do
+			if not subscription.unsubscribed and not suspendedSubscriptions[callback] then
+				callback(value)
 			end
 		end
 
 		firing = false
-
-		for callback, connection in pairs(suspendedConnections) do
-			connections[callback] = connection
+		for callback, subscription in suspendedSubscriptions do
+			subscriptions[callback] = subscription
 		end
-		table.clear(suspendedConnections)
+		table.clear(suspendedSubscriptions)
 	end
 
 	return {
-		connect = connect,
-		fire = fire,
-	}
+		subscribe = subscribe,
+	}, fire
 end
 
 return createSignal

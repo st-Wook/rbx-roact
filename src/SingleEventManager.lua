@@ -104,9 +104,12 @@ function SingleEventManager:resume()
 
 	self._isResuming = true
 
+	local index = 1
+
 	-- More events might be added to the queue when evaluating events, so we
 	-- need to be careful in order to preserve correct evaluation order.
-	for _, eventInvocation in pairs(self._suspendedEventQueue) do
+	while index <= #self._suspendedEventQueue do
+		local eventInvocation = self._suspendedEventQueue[index]
 		local listener = self._listeners[eventInvocation[1]]
 		local argumentCount = eventInvocation[2]
 
@@ -126,6 +129,8 @@ function SingleEventManager:resume()
 				Logging.warn("%s", result)
 			end
 		end
+
+		index += 1
 	end
 
 	self._isResuming = false

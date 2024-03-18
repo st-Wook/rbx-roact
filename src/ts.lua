@@ -1,7 +1,5 @@
 local Roact = require(script.Parent)
 
-local createElement	= require(script.Parent.createElement)
-
 local Change = require(script.Parent.PropMarkers.Change)
 local Event = require(script.Parent.PropMarkers.Event)
 local Ref = require(script.Parent.PropMarkers.Ref)

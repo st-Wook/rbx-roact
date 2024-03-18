@@ -130,7 +130,7 @@ function Logging.warn(messageTemplate, ...)
 	end
 
 	-- Set message to nil so a newline doesn't get added.
-	local trace = debug.traceback(nil, 2)
+	local trace = string.sub(debug.traceback("", 2), 2)
 	local fullMessage = string.format("%s\n%s", message, indent(trace, 1))
 
 	if outputEnabled then

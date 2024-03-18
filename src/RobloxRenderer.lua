@@ -61,7 +61,9 @@ end
 
 local function removeBinding(virtualNode, key)
 	local disconnect = virtualNode.bindings[key]
-	disconnect()
+	if disconnect then
+		disconnect:unsubscribe()
+	end
 	virtualNode.bindings[key] = nil
 end
 
@@ -85,7 +87,7 @@ local function attachBinding(virtualNode, key, newBinding)
 		virtualNode.bindings = {}
 	end
 
-	virtualNode.bindings[key] = Binding.connect(newBinding, updateBoundProperty)
+	virtualNode.bindings[key] = Binding.subscribe(newBinding, updateBoundProperty)
 
 	updateBoundProperty(newBinding:getValue())
 end
@@ -93,7 +95,7 @@ end
 local function detachAllBindings(virtualNode)
 	if virtualNode.bindings ~= nil then
 		for _, disconnect in pairs(virtualNode.bindings) do
-			disconnect()
+			disconnect:unsubscribe()
 		end
 		virtualNode.bindings = nil
 	end

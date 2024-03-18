@@ -29,8 +29,8 @@ function BindingInternalApi.update(binding, newValue)
 	return binding[BindingImpl].update(newValue)
 end
 
-function BindingInternalApi.connect(binding, callback)
-	return binding[BindingImpl].connect(callback)
+function BindingInternalApi.subscribe(binding, callback)
+	return binding[BindingImpl].subscribe(callback)
 end
 
 function BindingInternalApi.getValue(binding)
@@ -38,18 +38,20 @@ function BindingInternalApi.getValue(binding)
 end
 
 function BindingInternalApi.create(initialValue)
+	local signal, fire = createSignal()
 	local impl = {
 		value = initialValue,
-		changeSignal = createSignal(),
+		changeSignal = signal,
+		fire = fire,
 	}
 
-	function impl.connect(callback)
-		return impl.changeSignal:connect(callback)
+	function impl.subscribe(callback)
+		return impl.changeSignal:subscribe(callback)
 	end
 
 	function impl.update(newValue)
 		impl.value = newValue
-		impl.changeSignal:fire(newValue)
+		impl.fire(newValue)
 	end
 
 	function impl.getValue()
@@ -70,8 +72,8 @@ function BindingInternalApi.map(upstreamBinding, predicate)
 
 	local impl = {}
 
-	function impl.connect(callback)
-		return BindingInternalApi.connect(upstreamBinding, function(newValue)
+	function impl.subscribe(callback)
+		return BindingInternalApi.subscribe(upstreamBinding, function(newValue)
 			callback(predicate(newValue))
 		end)
 	end
@@ -117,11 +119,11 @@ function BindingInternalApi.join(upstreamBindings)
 		return value
 	end
 
-	function impl.connect(callback)
+	function impl.subscribe(callback)
 		local disconnects = {}
 
 		for key, upstream in pairs(upstreamBindings) do
-			disconnects[key] = BindingInternalApi.connect(upstream, function(_newValue)
+			disconnects[key] = BindingInternalApi.subscribe(upstream, function(_newValue)
 				callback(getValue())
 			end)
 		end
@@ -132,7 +134,7 @@ function BindingInternalApi.join(upstreamBindings)
 			end
 
 			for _, disconnect in pairs(disconnects) do
-				disconnect()
+				disconnect:unsubscribe()
 			end
 
 			disconnects = nil :: any

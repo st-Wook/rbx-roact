@@ -1,0 +1,5 @@
+std = "roblox"
+
+[config]
+unused_variable = { allow_unused_self = true }
+global_usage = { ignore_pattern = "__DEV__|__TESTEZ_RUNNING_TEST__" }

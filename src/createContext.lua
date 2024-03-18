@@ -1,16 +1,18 @@
 local Children = require(script.Parent.PropMarkers.Children)
 local Component = require(script.Parent.Component)
-local Signal = require(script.Parent.Signal)
 local Symbol = require(script.Parent.Symbol)
 local createFragment = require(script.Parent.createFragment)
+local createSignal = require(script.Parent.createSignal)
 
 --[[
 	Construct the value that is assigned to Roact's context storage.
 ]]
 local function createContextEntry(currentValue)
+	local onUpdate, fire = createSignal()
 	return {
 		value = currentValue,
-		onUpdate = Signal.new(),
+		onUpdate = onUpdate,
+		fire = fire
 	}
 end
 
@@ -44,19 +46,12 @@ local function createProvider(context)
 		-- This codepath will generally only update consumer components that has
 		-- a component implementing shouldUpdate between them and the provider.
 		if prevProps.value ~= self.props.value then
-			self.contextEntry.onUpdate:Fire(self.props.value)
+			self.contextEntry.fire(self.props.value)
 		end
 	end
 
 	function Provider:render()
 		return createFragment(self.props[Children])
-	end
-
-	function Provider:willUnmount()
-		if self.contextEntry.onUpdate ~= nil then
-			self.contextEntry.onUpdate:Destroy()
-			self.contextEntry.onUpdate = nil
-		end
 	end
 
 	return Provider
@@ -114,7 +109,7 @@ local function createConsumer(context)
 			-- only update if they differ. This may happen when an update from a
 			-- provider was blocked by an intermediate component that returned
 			-- false from shouldUpdate.
-			self.disconnect = self.contextEntry.onUpdate:Connect(function(newValue)
+			self.disconnect = self.contextEntry.onUpdate:subscribe(function(newValue)
 				if newValue ~= self.lastValue then
 					-- Trigger a dummy state update.
 					self:setState({})
@@ -125,7 +120,7 @@ local function createConsumer(context)
 
 	function Consumer:willUnmount()
 		if self.disconnect ~= nil then
-			self.disconnect:Disconnect()
+			self.disconnect:unsubscribe()
 			self.disconnect = nil
 		end
 	end
