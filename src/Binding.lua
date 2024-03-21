@@ -38,11 +38,9 @@ function BindingInternalApi.getValue(binding)
 end
 
 function BindingInternalApi.create(initialValue)
-	local signal, fire = createSignal()
 	local impl = {
 		value = initialValue,
-		changeSignal = signal,
-		fire = fire,
+		changeSignal = createSignal(),
 	}
 
 	function impl.subscribe(callback)
@@ -51,7 +49,7 @@ function BindingInternalApi.create(initialValue)
 
 	function impl.update(newValue)
 		impl.value = newValue
-		impl.fire(newValue)
+		impl.changeSignal:fire(newValue)
 	end
 
 	function impl.getValue()
@@ -134,7 +132,7 @@ function BindingInternalApi.join(upstreamBindings)
 			end
 
 			for _, disconnect in pairs(disconnects) do
-				disconnect:unsubscribe()
+				disconnect()
 			end
 
 			disconnects = nil :: any

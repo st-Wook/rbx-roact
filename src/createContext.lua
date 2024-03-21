@@ -8,11 +8,9 @@ local createSignal = require(script.Parent.createSignal)
 	Construct the value that is assigned to Roact's context storage.
 ]]
 local function createContextEntry(currentValue)
-	local onUpdate, fire = createSignal()
 	return {
 		value = currentValue,
-		onUpdate = onUpdate,
-		fire = fire
+		onUpdate = createSignal(),
 	}
 end
 
@@ -46,7 +44,7 @@ local function createProvider(context)
 		-- This codepath will generally only update consumer components that has
 		-- a component implementing shouldUpdate between them and the provider.
 		if prevProps.value ~= self.props.value then
-			self.contextEntry.fire(self.props.value)
+			self.contextEntry.onUpdate:fire(self.props.value)
 		end
 	end
 
@@ -120,7 +118,7 @@ local function createConsumer(context)
 
 	function Consumer:willUnmount()
 		if self.disconnect ~= nil then
-			self.disconnect:unsubscribe()
+			self.disconnect()
 			self.disconnect = nil
 		end
 	end
