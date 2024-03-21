@@ -64,7 +64,7 @@ local function createElement(component, props, children)
 
 	if config.elementTracing then
 		-- We set the message to nil to prevent the newline from appearing.
-		element.source = string.sub(debug.traceback("", 2), 2)
+		element.source = debug.traceback(nil, 2)
 	end
 
 	return element
