@@ -18,7 +18,7 @@ local function createSignal()
 
 	local firing = false
 
-	local function connect(_self, callback)
+	local function subscribe(_self, callback)
 		assert(typeof(callback) == "function", "Can only connect to signals with a function.")
 
 		local connection = {
@@ -60,7 +60,7 @@ local function createSignal()
 	end
 
 	return {
-		connect = connect,
+		subscribe = subscribe,
 		fire = fire,
 	}
 end
